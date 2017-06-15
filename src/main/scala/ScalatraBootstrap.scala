@@ -4,7 +4,8 @@ import airports._
 import org.scalatra._
 import javax.servlet.ServletContext
 
-import airports.datamodel.Tables
+import airports.controllers.AppController
+import airports.models.Tables
 import slick.jdbc.H2Profile.api._
 
 
@@ -20,7 +21,7 @@ class ScalatraBootstrap extends LifeCycle {
 
   override def init(context: ServletContext): Unit = {
     val db = Database.forDataSource(cpds, None)
-    context.mount(new AirportsApp(db), "/*")
+    context.mount(new AppController(db), "/*")
 
     // provision the database - we need data in there!
     db.run(DBIO.seq(Tables.createDatabase))

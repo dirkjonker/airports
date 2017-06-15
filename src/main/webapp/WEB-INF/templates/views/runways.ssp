@@ -1,0 +1,28 @@
+<% import airports.models.Runway %>
+<%@ val runways: Seq[Runway] %>
+
+<h1>Runways</h1>
+<div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+        <th>Airport Code</th>
+        <th>Length</th>
+        <th>Width</th>
+        <th>Surface</th>
+        <th>Runway Identifier</th>
+        </tr>
+    </thead>
+    <tbody>
+    #for(runway <- runways)
+    <tr>
+        <td>${runway.airportIdent}</td>
+        <td>${runway.length}</td>
+        <td>${runway.width}</td>
+        <td>${runway.surface}</td>
+        <td>${runway.le_ident}</td>
+    </tr>
+    #end
+    </tbody>
+</table>
+</div>

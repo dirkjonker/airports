@@ -7,14 +7,28 @@ $ sbt
 > jetty:start
 ```
 
-List all countries:
-[http://localhost:8080/countries](http://localhost:8080/countries)
+Visit the website in your browser:
+[http://localhost:8080/](http://localhost:8080/)
 
-List one specific country:
-[http://localhost:8080/countries/NL](http://localhost:8080/countries/NL)
+# What technology does it depend on?
 
-List all airports (warning, terribly slow):
-[http://localhost:8080/airports](http://localhost:8080/airports)
+Using the Scalatra framework for the web pages.
+To easily query the airports and runways it uses an in-memory H2 database. 
+Because it uses Slick to interface with the database, it is easy to substitute
+H2 with a different database technology.
 
-List a single airport by code:
-[http://localhost:8080/airports/EHAM](http://localhost:8080/airports/EHAM)
+# How does it work?
+
+The application uses the MVC pattern.
+
+The models for Countries, Airports and Runways are defined as a `case class` to make it
+easy to pass it around between the CSV loader, database, and web framework.
+
+There is a single controller, with the routes defined in the AirportRoutes trait.
+
+The views are created with Scalate/SSP templates.
+
+# What if it needs to grow?
+
+The AppController is already getting big. It would be wise to implement real controllers
+and let the routes use those controllers.

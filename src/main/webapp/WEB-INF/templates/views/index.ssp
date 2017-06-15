@@ -1,3 +1,15 @@
-<h1>Airports</h1>
+<div class="jumbotron">
+<h1>Welcome to the airports browser</h1>
 
-<p>Hello, World!</p>
+<p>
+    This website contains information of a lot of airports from all over the world.
+    You can list all airports per country and get detailed information for an airport.
+</p>
+
+<p>
+    This is a simple web application written in Scala using the <a href="http://scalatra.org/">Scalatra framework</a>.
+</p>
+
+<p><a href="/countries" class="btn btn-primary btn-lg">List all countries</a></p>
+<p><a href="/airports" class="btn btn-default">List all airports</a></p>
+</div>

@@ -1,8 +1,20 @@
 <% import airports.models.Airport %>
 <%@ val airports: Seq[Airport] %>
+<%@ val page: Int %>
+<%@ val limit: Int %>
 
 <h1>Airports</h1>
 <div>
+#if (page > 0)  // only display pagination for airport list
+<div class="row">
+    <div class="col-md-6">
+        <a href="airports?page=${ "%d".format(page - 1) }" class="btn btn-default ${ if (page < 2) "disabled" }" role="button">Previous page</a>
+    </div>
+    <div class="col-md-6 text-right">
+        <a href="airports?page=${ "%d".format(page + 1) }" class="btn btn-default" role="button">Next page</a>
+    </div>
+</div>
+#end
 <table class="table table-striped">
     <thead>
         <tr>
@@ -16,11 +28,11 @@
     <tbody>
     #for(airport <- airports)
     <tr>
-        <td>${airport.iso_country}</td>
-        <td><a href="${airport.homeLink}">${airport.name}</a></td>
-        <td>${airport.ident}</td>
-        <td>${airport.iso_region}</td>
-        <td>${airport.municipality}</td>
+        <td>${ airport.iso_country }</td>
+        <td><a href="/airports/${ airport.ident }">${ airport.name }</a></td>
+        <td>${ airport.ident }</td>
+        <td>${ airport.iso_region }</td>
+        <td>${ airport.municipality }</td>
     </tr>
     #end
     </tbody>

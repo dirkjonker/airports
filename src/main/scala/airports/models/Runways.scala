@@ -1,6 +1,5 @@
-package airports.datamodel
+package airports.models
 
-import airports.models.Runway
 import slick.jdbc.H2Profile.api._
 
 /**

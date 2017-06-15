@@ -1,0 +1,58 @@
+<% import airports.models.Airport %>
+<% import airports.models.Runway %>
+<%@ val airport: Airport %>
+<%@ val runways: Seq[Runway]%>
+
+<div class="page-header">
+    <h1>${airport.name}</h1>
+</div>
+
+<div class="panel panel-default">
+<!-- Default panel contents -->
+<div class="panel-heading">Airport information</div>
+
+<!-- Table -->
+<table class="table table-striped">
+    <tbody>
+        <tr><td>Country</td><td><a href="/countries/${ airport.iso_country }">${ airport.iso_country }</a></td></tr>
+        <tr><td>Municipality</td><td>${ airport.municipality.getOrElse("N/A") }</td></tr>
+        <tr><td>ICAO Code</td><td>${ airport.gpsCode.getOrElse("N/A") }</td></tr>
+        <tr><td>IATA Code</td><td>${ airport.iataCode.getOrElse("N/A") }</td></tr>
+        <tr><td>Latitude</td><td>${ airport.latitude }</td></tr>
+        <tr><td>Longitude</td><td>${ airport.longitude }</td></tr>
+        #if (airport.homeLink.isDefined)
+        <tr><td>Website</td><td><a href="${ airport.homeLink }">${ airport.homeLink }</a></td></tr>
+        #end
+        #if (airport.wikipediaLink.isDefined)
+            <tr><td>Wikipedia</td><td><a href="${ airport.wikipediaLink }">${ airport.wikipediaLink }</a></td></tr>
+        #end
+    </tbody>
+</table>
+</div>
+
+<div class="panel panel-default">
+<!-- Default panel contents -->
+<div class="panel-heading">Runways</div>
+
+<!-- Table -->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Runway Identifier</th>
+            <th>Length</th>
+            <th>Width</th>
+            <th>Surface</th>
+        </tr>
+    </thead>
+    <tbody>
+    #for(runway <- runways)
+        <tr>
+            <td>${runway.le_ident}</td>
+            <td>${runway.length}</td>
+            <td>${runway.width}</td>
+            <td>${runway.surface}</td>
+        </tr>
+    #end
+    </tbody>
+</table>
+</div>

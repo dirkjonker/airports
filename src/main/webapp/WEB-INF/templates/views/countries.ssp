@@ -1,22 +1,32 @@
 <% import airports.models.Country %>
 <%@ val countries: Seq[Country] %>
+<%@ val search: Option[String] %>
 
 <h1>Countries</h1>
-<div>
+
+#match (search)
+#case (Some(term))
+<div class="row">
+    <p>You searched for: <em>${ term }</em></p>
+</div>
+#otherwise
+#end
+
+<div class="row">
 <table class="table table-striped">
     <thead>
         <tr>
-        <th>Continent</th>
+        <th>Country</th>
         <th>Code</th>
-        <th>Name</th>
+        <th>Continent</th>
         </tr>
     </thead>
     <tbody>
     #for(country <- countries)
     <tr>
-        <td><%= country.continent %></td>
-        <td><%= country.code %></td>
-        <td><%= country.name %></td>
+        <td><a href="/countries/${ country.code }">${ country.name }</a></td>
+        <td>${ country.code }</td>
+        <td>${ country.continent }</td>
     </tr>
     #end
     </tbody>
