@@ -1,0 +1,24 @@
+<% import airports.models.Country %>
+<%@ val countries: Seq[Country] %>
+
+<h1>Countries</h1>
+<div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+        <th>Continent</th>
+        <th>Code</th>
+        <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+    #for(country <- countries)
+    <tr>
+        <td><%= country.continent %></td>
+        <td><%= country.code %></td>
+        <td><%= country.name %></td>
+    </tr>
+    #end
+    </tbody>
+</table>
+</div>

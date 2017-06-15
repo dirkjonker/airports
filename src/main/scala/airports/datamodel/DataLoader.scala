@@ -1,4 +1,4 @@
-package airports.dataload
+package airports.datamodel
 
 
 import airports.models._

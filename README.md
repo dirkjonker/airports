@@ -7,9 +7,6 @@ $ sbt
 > jetty:start
 ```
 
-Then create the database by going to 
-[http://localhost:8080/db/create](http://localhost:8080/db/create)
-
 List all countries:
 [http://localhost:8080/countries](http://localhost:8080/countries)
 

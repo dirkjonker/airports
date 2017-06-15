@@ -1,6 +1,6 @@
 package airports
 
-import airports.dataload.DataLoader._
+import airports.datamodel.DataLoader._
 import airports.models._
 import org.scalatest.FunSuite
 

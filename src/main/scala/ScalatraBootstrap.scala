@@ -4,7 +4,9 @@ import airports._
 import org.scalatra._
 import javax.servlet.ServletContext
 
+import airports.datamodel.Tables
 import slick.jdbc.H2Profile.api._
+
 
 /**
   * Main application settings/inits/etc.
@@ -20,15 +22,17 @@ class ScalatraBootstrap extends LifeCycle {
     // TODO provision the database here
     val db = Database.forDataSource(cpds, None)
     context.mount(new AirportsApp(db), "/*")
+
+    db.run(DBIO.seq(Tables.createDatabase))
   }
 
   private def closeDbConnection(): Unit = {
     logger.info("Closing c3po connection pool")
-    cpds.close
+    cpds.close()
   }
 
   override def destroy(context: ServletContext): Unit = {
     super.destroy(context)
-    closeDbConnection
+    closeDbConnection()
   }
 }
