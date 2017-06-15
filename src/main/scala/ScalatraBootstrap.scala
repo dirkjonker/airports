@@ -19,10 +19,10 @@ class ScalatraBootstrap extends LifeCycle {
   logger.info("Created c3p0 connection pool")
 
   override def init(context: ServletContext): Unit = {
-    // TODO provision the database here
     val db = Database.forDataSource(cpds, None)
     context.mount(new AirportsApp(db), "/*")
 
+    // provision the database - we need data in there!
     db.run(DBIO.seq(Tables.createDatabase))
   }
 

@@ -64,6 +64,24 @@ trait AirportRoutes extends ScalatraBase with FutureSupport with ScalateSupport 
     }
   }
 
+  /**
+    * Get the top N countries by number of airports
+    */
+  get("/countries/top/:num") {
+    val num = params("num")
+
+    val query =
+      sql"""
+           SELECT countries.name, COUNT(*) AS num_airports
+           FROM countries
+           JOIN airports ON airports.iso_country = countries.code
+           GROUP BY countries.name
+           ORDER BY 2 DESC
+           LIMIT $num
+         """.as[(String, Int)]
+    db.run(query) map { xs => xs.mkString("\n") }
+  }
+
 }
 
 class AirportsApp(val db: Database) extends ScalatraServlet with FutureSupport with AirportRoutes {

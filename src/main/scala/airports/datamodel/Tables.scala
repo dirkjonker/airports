@@ -13,9 +13,10 @@ object Tables {
   val runways = TableQuery[Runways]
 
   // DBIO Action which runs several queries inserting sample data
+  // first countries, then airports, then runways (FK constraints)
   val insertData = DBIO.seq(
-    airports ++= DataLoader.airportData,
     countries ++= DataLoader.countryData,
+    airports ++= DataLoader.airportData,
     runways ++= DataLoader.runwayData
   )
 

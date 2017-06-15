@@ -47,4 +47,6 @@ class Airports(tag: Tag) extends Table[Airport](tag, "airports") {
     continent, iso_country, iso_region, municipality, scheduledService,
     gpsCode, iataCode, localCode, homeLink, wikipediaLink, keywords
   ) <> ((Airport.apply _).tupled, Airport.unapply)
+
+  def country = foreignKey("fk_airport_country", iso_country, Tables.countries)(_.code)
 }
