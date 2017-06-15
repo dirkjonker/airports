@@ -15,8 +15,6 @@ object DataLoader {
 
   private val logger = LoggerFactory.getLogger(classOf[DataLoader])
 
-  logger.info("halloooo")
-
   // implicits for conversion by the CSV library
   // can I can put these somewhere else?
   implicit val airportDecoder: RowDecoder[Airport] = RowDecoder.ordered(Airport.apply _)

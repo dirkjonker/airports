@@ -1,0 +1,28 @@
+<% import airports.models.Airport %>
+<%@ val airports: Seq[Airport] %>
+
+<h1>Airports</h1>
+<div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+        <th>Country</th>
+        <th>Name</th>
+        <th>Code</th>
+        <th>Region</th>
+        <th>Municipality</th>
+        </tr>
+    </thead>
+    <tbody>
+    #for(airport <- airports)
+    <tr>
+        <td>${airport.iso_country}</td>
+        <td><a href="${airport.homeLink}">${airport.name}</a></td>
+        <td>${airport.ident}</td>
+        <td>${airport.iso_region}</td>
+        <td>${airport.municipality}</td>
+    </tr>
+    #end
+    </tbody>
+</table>
+</div>
