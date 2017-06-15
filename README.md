@@ -30,5 +30,6 @@ The views are created with Scalate/SSP templates.
 
 # What if it needs to grow?
 
-The AppController is already getting big. It would be wise to implement real controllers
-and let the routes use those controllers.
+- The AppController is already getting big. It would be wise to implement real controllers
+  and let the routes use those controllers.
+- Definitely needs pagination for countries with a large number of airports.

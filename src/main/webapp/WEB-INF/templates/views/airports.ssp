@@ -21,6 +21,7 @@
         <th>Country</th>
         <th>Name</th>
         <th>Code</th>
+        <th>Type</th>
         <th>Region</th>
         <th>Municipality</th>
         </tr>
@@ -31,6 +32,7 @@
         <td>${ airport.iso_country }</td>
         <td><a href="/airports/${ airport.ident }">${ airport.name }</a></td>
         <td>${ airport.ident }</td>
+        <td>${ airport.airportType.replace("_", " ").capitalize }</td>
         <td>${ airport.iso_region }</td>
         <td>${ airport.municipality }</td>
     </tr>

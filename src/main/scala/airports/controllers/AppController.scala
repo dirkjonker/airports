@@ -27,7 +27,7 @@ trait AirportRoutes extends ScalatraBase with FutureSupport with ScalateSupport 
     val query = search match {
       case Some(q) => for {
         country <- Tables.countries
-        if country.name.toLowerCase like s"%$q%".toLowerCase || country.code === q.toUpperCase()
+        if (country.name.toLowerCase like s"%$q%".toLowerCase) || (country.code === q.toUpperCase)
       } yield country
       case _ => Tables.countries
     }
@@ -68,18 +68,26 @@ trait AirportRoutes extends ScalatraBase with FutureSupport with ScalateSupport 
     contentType = "text/html"
 
     val code = params("code")
-    db.run(Tables.airports.filter(_.ident === code).result) map {
-      xs => ssp("/singleAirport", "airport" -> xs.head, "runways" -> Nil)
+
+    val query = for {
+      a <- Tables.airports.filter(_.ident === code).result
+      r <- Tables.runways.filter(_.airportIdent === code).result
+    } yield (a, r)
+
+    db.run(query) map { case (airports, runways) =>
+      ssp("/singleAirport", "airport" -> airports.head, "runways" -> runways)
     }
   }
 
   /**
-    * Get the top N countries by number of airports
+    * Show the report
     */
-  get("/countries/top/:num") {
-    val num = params("num")
+  get("/report") {
+    contentType = "text/html"
 
-    val query =
+    val num = 10
+
+    val topQuery =
       sql"""
            SELECT countries.name, COUNT(*) AS num_airports
            FROM countries
@@ -88,14 +96,24 @@ trait AirportRoutes extends ScalatraBase with FutureSupport with ScalateSupport 
            ORDER BY 2 DESC
            LIMIT $num
          """.as[(String, Int)]
-    db.run(query) map { xs => xs.mkString("\n") }
-  }
+    val bottomQuery =
+      sql"""
+           SELECT countries.name, COUNT(*) AS num_airports
+           FROM countries
+           JOIN airports ON airports.iso_country = countries.code
+           GROUP BY countries.name
+           ORDER BY 2 ASC
+           LIMIT $num
+         """.as[(String, Int)]
 
-  /**
-    * Show the report
-    */
-  get("/report") {
+    val composed = for {
+      tops <- topQuery
+      bottoms <- bottomQuery
+    } yield (tops, bottoms)
 
+    db.run(composed) map { case (topCountries, bottomCountries) =>
+      ssp("/report", "top" -> topCountries, "bottom" -> bottomCountries)
+    }
   }
 }
 
