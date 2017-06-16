@@ -1,9 +1,9 @@
 package airports.controllers
 
 import airports.AirportAppStack
-import airports.models.Tables
+import airports.models.Airport
 import org.scalatra.scalate.ScalateSupport
-import org.scalatra.{FutureSupport, ScalatraBase}
+import org.scalatra.{FutureSupport, NotFound, ScalatraBase}
 import slick.jdbc.H2Profile.api._
 
 import scala.concurrent.ExecutionContext
@@ -26,26 +26,22 @@ trait AppRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
     contentType = "text/html"
 
     val search = params.get("search")
-    val query = search match {
-      case Some(q) => for {
-        country <- Tables.countries
-        if (country.name.toLowerCase like s"%$q%".toLowerCase) || (country.code === q.toUpperCase)
-      } yield country
-      case _ => Tables.countries
+    val countries = search match {
+      case Some(q) => CountryController.find(q)
+      case _ => CountryController.list
     }
 
-    db.run(query.sortBy(_.name).result) map {
-      xs => ssp("/countries", "countries" -> xs, "search" -> search)
-    }
+    ssp("/countries", "countries" -> countries, "search" -> search)
   }
 
   get("/countries/:code") {
     contentType = "text/html"
 
     val code = params("code")
-    db.run(Tables.airports.filter(_.iso_country === code).result) map {
-      xs => ssp("/airports", "airports" -> xs, "page" -> -1, "limit" -> 0)
-    } // page == -1 to disable pagination
+    val airports = AirportController.forCountry(code)
+
+    ssp("/airports", "airports" -> airports, "page" -> 0, "limit" -> 0,
+      "numPages" -> 0)
   }
 
   get("/airports") {
@@ -55,15 +51,10 @@ trait AppRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
     val limit: Int = params.getOrElse("limit", "20").toInt
     val offset = (page - 1) * limit
 
-    db.run(Tables.airports.drop(offset).take(limit).result) map {
-      xs => ssp("/airports", "airports" -> xs, "page" -> page, "limit" -> limit)
-    }
-  }
+    val airports = AirportController.page(page, limit)
 
-  get("/runways") {
-    db.run(Tables.runways.result) map {
-      xs => ssp("/runways", "runways" -> xs)
-    }
+    ssp("/airports", "airports" -> airports, "page" -> page, "limit" -> limit,
+      "numPages" -> AirportController.numPages())
   }
 
   get("/airports/:code") {
@@ -71,19 +62,17 @@ trait AppRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
 
     val code = params("code")
 
-    val query = for {
-      a <- Tables.airports.filter(_.ident === code).result
-      r <- Tables.runways.filter(_.airportIdent === code).result
-    } yield (a, r)
-
-    db.run(query) map { case (airports, runways) =>
-      ssp("/singleAirport", "airport" -> airports.head, "runways" -> runways)
+    AirportController.getByCode(code) match {
+      case Some(a: Airport) =>
+        val runways = RunwayController.forAirport(a)
+        ssp("/singleAirport", "airport" -> a, "runways" -> runways)
+      case None => NotFound(s"no such airport: $code")
     }
   }
 
   /**
     * Show the report
-    */
+    *
   get("/report") {
     contentType = "text/html"
 
@@ -115,7 +104,7 @@ trait AppRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
       ssp("/report", "countriesAirports" -> countriesAirports,
         "countriesRunways" -> countriesRunways.groupBy(_._1))
     }
-  }
+  } */
 }
 
 class AppController(val db: Database) extends AirportAppStack with AppRoutes {

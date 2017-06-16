@@ -1,7 +1,6 @@
 import javax.servlet.ServletContext
 
 import airports.controllers.AppController
-import airports.models.Tables
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import org.scalatra._
 import org.slf4j.LoggerFactory
@@ -21,9 +20,6 @@ class ScalatraBootstrap extends LifeCycle {
   override def init(context: ServletContext): Unit = {
     val db = Database.forDataSource(cpds, None)
     context.mount(new AppController(db), "/*")
-
-    // provision the database - we need data in there!
-    db.run(DBIO.seq(Tables.createDatabase))
   }
 
   private def closeDbConnection(): Unit = {

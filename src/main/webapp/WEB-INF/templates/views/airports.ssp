@@ -2,6 +2,7 @@
 <%@ val airports: Seq[Airport] %>
 <%@ val page: Int %>
 <%@ val limit: Int %>
+<%@ val numPages: Int %>
 
 <h1>Airports</h1>
 <div>
@@ -11,7 +12,7 @@
         <a href="airports?page=${ "%d".format(page - 1) }" class="btn btn-default ${ if (page < 2) "disabled" }" role="button">Previous page</a>
     </div>
     <div class="col-md-6 text-right">
-        <a href="airports?page=${ "%d".format(page + 1) }" class="btn btn-default" role="button">Next page</a>
+        <a href="airports?page=${ "%d".format(page + 1) }" class="btn btn-default ${ if (page >= numPages) "disabled" }" role="button">Next page</a>
     </div>
 </div>
 #end

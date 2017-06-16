@@ -1,5 +1,7 @@
 package airports.models
 
+import airports.datamodel.DataLoader
+
 /**
   * Created by dirk on 6/14/17.
   */
