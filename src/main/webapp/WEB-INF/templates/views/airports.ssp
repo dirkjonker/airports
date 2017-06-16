@@ -5,7 +5,7 @@
 
 <h1>Airports</h1>
 <div>
-#if (page > 0)  // only display pagination for airport list
+#if (page > 0)  <%-- only display pagination for airport list --%>
 <div class="row">
     <div class="col-md-6">
         <a href="airports?page=${ "%d".format(page - 1) }" class="btn btn-default ${ if (page < 2) "disabled" }" role="button">Previous page</a>
