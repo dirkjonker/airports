@@ -1,8 +1,9 @@
 package airports.controllers
 
+import airports.AirportAppStack
 import airports.models.Tables
 import org.scalatra.scalate.ScalateSupport
-import org.scalatra.{FutureSupport, ScalatraBase, ScalatraServlet}
+import org.scalatra.{FutureSupport, ScalatraBase}
 import slick.jdbc.H2Profile.api._
 
 import scala.concurrent.ExecutionContext
@@ -17,6 +18,7 @@ trait AppRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
 
   get("/") {
     contentType = "text/html"
+    status = 200
     ssp("/index")
   }
 
@@ -116,19 +118,6 @@ trait AppRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
   }
 }
 
-class AppController(val db: Database) extends ScalatraServlet with FutureSupport with AppRoutes {
+class AppController(val db: Database) extends AirportAppStack with AppRoutes {
   protected implicit def executor: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
-
-  /**
-    * 404 and such
-    */
-  notFound {
-    // remove content type in case it was set through an action
-    contentType = ""
-    // Try to render a ScalateTemplate if no route matched
-    findTemplate(requestPath) map { path =>
-      contentType = "text/html"
-      layoutTemplate(path)
-    } orElse serveStaticResource() getOrElse resourceNotFound()
-  }
 }
