@@ -1,11 +1,10 @@
-import com.mchange.v2.c3p0.ComboPooledDataSource
-import org.slf4j.LoggerFactory
-import airports._
-import org.scalatra._
 import javax.servlet.ServletContext
 
 import airports.controllers.AppController
 import airports.models.Tables
+import com.mchange.v2.c3p0.ComboPooledDataSource
+import org.scalatra._
+import org.slf4j.LoggerFactory
 import slick.jdbc.H2Profile.api._
 
 

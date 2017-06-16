@@ -11,7 +11,7 @@ import scala.concurrent.ExecutionContext
 /**
   * Contains all the routes of the application
   */
-trait AirportRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
+trait AppRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
 
   def db: Database
 
@@ -116,7 +116,7 @@ trait AirportRoutes extends ScalatraBase with FutureSupport with ScalateSupport 
   }
 }
 
-class AppController(val db: Database) extends ScalatraServlet with FutureSupport with AirportRoutes {
+class AppController(val db: Database) extends ScalatraServlet with FutureSupport with AppRoutes {
   protected implicit def executor: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   /**
