@@ -1,16 +1,41 @@
-<%@ val top: Seq[(String, Int)] %>
-<%@ val bottom: Seq[(String, Int)] %>
+<%@ val countriesAirports: Seq[(String, Int)] %>
+<%@ val countriesRunways: Map[String, Seq[(String, String)]] %>
 
-<p>Top countries</p>
-<ol>
-#for (t <- top)
-    <li>${ t._1 } - ${ t._2 }</li>
-#end
-</ol>
+<div class="row">
+<div class="col-md-6">
+    <h3>Number of airports per country</h3>
+    <p>Top 10</p>
+    <ol>
+        #for (t <- countriesAirports.take(10))
+            <li>${ t._1 } - ${ t._2 }</li>
+        #end
+    </ol>
 
-<p>Bottom countries</p>
-<ol>
-    #for (t <- bottom)
-        <li>${ t._1 } - ${ t._2 }</li>
+    <p>Bottom 10</p>
+    <ol>
+        #for (t <- countriesAirports.reverse.take(10))
+            <li>${ t._1 } - ${ t._2 }</li>
+        #end
+    </ol>
+</div>
+
+<div class="col-md-6">
+    <h3>Types of runways per country</h3>
+    <table class="table">
+    <tbody>
+    #for ((country, surfaces) <- countriesRunways)
+    <tr>
+        <td>${ country }</td>
+        <td>
+            <ul>
+            #for (surface <- surfaces)
+                <li>${ surface._2 }</li>
+            #end
+            </ul>
+        </td>
+    </tr>
     #end
-</ol>
+    </tbody>
+    </table>
+</div>
+</div>

@@ -85,34 +85,33 @@ trait AirportRoutes extends ScalatraBase with FutureSupport with ScalateSupport 
   get("/report") {
     contentType = "text/html"
 
-    val num = 10
-
-    val topQuery =
+    val numAirportQuery =
       sql"""
            SELECT countries.name, COUNT(*) AS num_airports
            FROM countries
            JOIN airports ON airports.iso_country = countries.code
            GROUP BY countries.name
            ORDER BY 2 DESC
-           LIMIT $num
          """.as[(String, Int)]
-    val bottomQuery =
+
+    val surfacesQuery =
       sql"""
-           SELECT countries.name, COUNT(*) AS num_airports
-           FROM countries
-           JOIN airports ON airports.iso_country = countries.code
-           GROUP BY countries.name
-           ORDER BY 2 ASC
-           LIMIT $num
-         """.as[(String, Int)]
+            SELECT DISTINCT countries.name, runways.surface
+            FROM countries
+            JOIN airports ON airports.iso_country = countries.code
+            JOIN runways ON runways.airport_id = airports.id
+            WHERE runways.surface IS NOT NULL
+            ORDER BY 1, 2
+        """.as[(String, String)]
 
     val composed = for {
-      tops <- topQuery
-      bottoms <- bottomQuery
-    } yield (tops, bottoms)
+      a <- numAirportQuery
+      b <- surfacesQuery
+    } yield (a, b)
 
-    db.run(composed) map { case (topCountries, bottomCountries) =>
-      ssp("/report", "top" -> topCountries, "bottom" -> bottomCountries)
+    db.run(composed) map { case (countriesAirports, countriesRunways) =>
+      ssp("/report", "countriesAirports" -> countriesAirports,
+        "countriesRunways" -> countriesRunways.groupBy(_._1))
     }
   }
 }
