@@ -13,7 +13,7 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="/">Airports browser</a>
                 </div>
-                <form class="navbar-form navbar-right" role="search" action="/countries" method="get">
+                <form class="navbar-form navbar-right" role="search" action="/countries/" method="get">
                     <div class="form-group">
                         <input name="search" type="text" class="form-control" placeholder="Search country...">
                     </div>

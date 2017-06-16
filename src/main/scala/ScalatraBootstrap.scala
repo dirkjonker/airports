@@ -1,6 +1,6 @@
 import javax.servlet.ServletContext
 
-import airports.controllers.AppController
+import airports.controllers.{AirportController, AppController, CountryController, ReportController}
 import airports.models.Tables
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import org.scalatra._
@@ -20,7 +20,10 @@ class ScalatraBootstrap extends LifeCycle {
 
   override def init(context: ServletContext): Unit = {
     val db = Database.forDataSource(cpds, None)
-    context.mount(new AppController(db), "/*")
+    context.mount(new AppController, "/*")
+    context.mount(new AirportController(db), "/airports/*")
+    context.mount(new CountryController(db), "/countries/*")
+    context.mount(new ReportController(db), "/report/*")
 
     // provision the database - we need data in there!
     db.run(DBIO.seq(Tables.createDatabase))
