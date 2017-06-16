@@ -14,8 +14,6 @@ import scala.concurrent.ExecutionContext
   */
 trait AppRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
 
-  def db: Database
-
   get("/") {
     contentType = "text/html"
     status = 200
@@ -49,7 +47,6 @@ trait AppRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
 
     val page: Int = params.getOrElse("page", "1").toInt
     val limit: Int = params.getOrElse("limit", "20").toInt
-    val offset = (page - 1) * limit
 
     val airports = AirportController.page(page, limit)
 
@@ -62,7 +59,7 @@ trait AppRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
 
     val code = params("code")
 
-    AirportController.getByCode(code) match {
+    AirportController.byCode(code) match {
       case Some(a: Airport) =>
         val runways = RunwayController.forAirport(a)
         ssp("/singleAirport", "airport" -> a, "runways" -> runways)
@@ -72,41 +69,17 @@ trait AppRoutes extends ScalatraBase with FutureSupport with ScalateSupport {
 
   /**
     * Show the report
-    *
+    */
   get("/report") {
     contentType = "text/html"
 
-    val numAirportQuery =
-      sql"""
-           SELECT countries.name, COUNT(*) AS num_airports
-           FROM countries
-           JOIN airports ON airports.iso_country = countries.code
-           GROUP BY countries.name
-           ORDER BY 2 DESC
-         """.as[(String, Int)]
+    val countriesAirports = AirportController.numberPerCountry
 
-    val surfacesQuery =
-      sql"""
-            SELECT DISTINCT countries.name, runways.surface
-            FROM countries
-            JOIN airports ON airports.iso_country = countries.code
-            JOIN runways ON runways.airport_id = airports.id
-            WHERE runways.surface IS NOT NULL
-            ORDER BY 1, 2
-        """.as[(String, String)]
-
-    val composed = for {
-      a <- numAirportQuery
-      b <- surfacesQuery
-    } yield (a, b)
-
-    db.run(composed) map { case (countriesAirports, countriesRunways) =>
-      ssp("/report", "countriesAirports" -> countriesAirports,
-        "countriesRunways" -> countriesRunways.groupBy(_._1))
-    }
-  } */
+    ssp("/report", "countriesAirports" -> countriesAirports,
+      "countriesRunways" -> Map.empty)
+  }
 }
 
-class AppController(val db: Database) extends AirportAppStack with AppRoutes {
+class AppController extends AirportAppStack with AppRoutes {
   protected implicit def executor: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 }

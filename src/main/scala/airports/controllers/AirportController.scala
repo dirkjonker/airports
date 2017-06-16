@@ -44,7 +44,7 @@ object AirportController {
     * @param code the code for which the airport is known
     * @return
     */
-  def getByCode(code: String): Option[Airport] = data find (_.ident == code)
+  def byCode(code: String): Option[Airport] = data find (_.ident == code)
 
   /**
     * Get all airports for a certain country
@@ -61,4 +61,11 @@ object AirportController {
     * @return
     */
   def forCountry(country: Country): List[Airport] = data filter (_.iso_country == country.code)
+
+  /**
+    *
+    */
+  val numberPerCountry: List[(Country, Int)] = data.groupBy(_.iso_country).map {
+    xs => (CountryController.byCode(xs._1).get, xs._2.size)
+  }.toList.sortBy(_._2).reverse
 }

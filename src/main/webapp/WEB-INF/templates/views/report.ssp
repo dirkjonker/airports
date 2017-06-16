@@ -1,4 +1,5 @@
-<%@ val countriesAirports: Seq[(String, Int)] %>
+<% import airports.models.Country %>
+<%@ val countriesAirports: Seq[(Country, Int)] %>
 <%@ val countriesRunways: Map[String, Seq[(String, String)]] %>
 
 <div class="row">
@@ -7,14 +8,14 @@
     <p>Top 10</p>
     <ol>
         #for (t <- countriesAirports.take(10))
-            <li>${ t._1 } - ${ t._2 }</li>
+            <li><a href="/countries/${ t._1.code }">${ t._1.name } - ${ t._2 }</a></li>
         #end
     </ol>
 
     <p>Bottom 10</p>
     <ol>
         #for (t <- countriesAirports.reverse.take(10))
-            <li>${ t._1 } - ${ t._2 }</li>
+            <li><a href="/countries/${ t._1.code }">${ t._1.name } - ${ t._2 }</a></li>
         #end
     </ol>
 </div>

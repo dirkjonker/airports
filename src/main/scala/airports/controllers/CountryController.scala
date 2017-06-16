@@ -29,4 +29,6 @@ object CountryController {
     val q = query.toUpperCase
     data.filter(c => c.name.toUpperCase.contains(q) || c.code == q)
   }
+
+  def byCode(code: String): Option[Country] = data.find(_.code == code)
 }
