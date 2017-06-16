@@ -20,6 +20,8 @@ class ScalatraBootstrap extends LifeCycle {
 
   override def init(context: ServletContext): Unit = {
     val db = Database.forDataSource(cpds, None)
+
+    // for some reason this doesn't work like you think it should
     context.mount(new AppController, "/*")
     context.mount(new AirportController(db), "/airports/*")
     context.mount(new CountryController(db), "/countries/*")

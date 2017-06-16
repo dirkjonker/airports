@@ -2,7 +2,7 @@ package airports.controllers
 
 import airports.AirportAppStack
 import airports.models.Tables
-import org.scalatra.FutureSupport
+import org.scalatra.{FutureSupport, NotFound}
 import org.scalatra.scalate.ScalateSupport
 import slick.jdbc.H2Profile.api._
 
@@ -41,7 +41,8 @@ class CountryController(val db: Database) extends AirportAppStack with FutureSup
 
     val code = params("code")
     db.run(Tables.airports.filter(_.iso_country === code).result) map {
-      xs => ssp("/airports", "airports" -> xs, "page" -> -1, "limit" -> 0)
+      case Nil => NotFound(s"no such country: $code")
+      case xs => ssp("/airports", "airports" -> xs, "page" -> -1, "limit" -> 0)
     } // page == -1 to disable pagination
   }
 }

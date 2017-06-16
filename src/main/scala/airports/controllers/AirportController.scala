@@ -2,7 +2,7 @@ package airports.controllers
 
 import airports.AirportAppStack
 import airports.models.Tables
-import org.scalatra.FutureSupport
+import org.scalatra.{FutureSupport, NotFound}
 import org.scalatra.scalate.ScalateSupport
 import slick.jdbc.H2Profile.api._
 
@@ -33,10 +33,7 @@ class AirportController(val db: Database) extends AirportAppStack with FutureSup
     } yield (a, r)
 
     db.run(query) map {
-      case (Nil, _) => {
-        status = 404
-        s"not found: airport code: $code"
-      }
+      case (Nil, _) => NotFound(s"not found: airport code: $code")
       case (airports, runways) =>
         ssp("/singleAirport", "airport" -> airports.head, "runways" -> runways)
     }
